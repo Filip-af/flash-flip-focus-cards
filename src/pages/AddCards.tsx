@@ -43,7 +43,7 @@ const AddCards = () => {
       const cards = JSON.parse(jsonInput);
       if (Array.isArray(cards) && cards.every(c => c.question && c.answer)) {
         addCardsBulk(cards);
-        toast.success(\`\${cards.length} flashcards added!\`);
+        toast.success(`${cards.length} flashcards added!`);
         setJsonInput('');
       } else {
         throw new Error('Invalid JSON format.');
