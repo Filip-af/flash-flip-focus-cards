@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDeckStore } from '@/store/deckStore';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 
 const jsonExample = `[
   { 
@@ -20,10 +22,12 @@ const jsonExample = `[
 ]`;
 
 const AddCards = () => {
-  const { addCard, addCardsBulk } = useDeckStore();
+  const { decks, activeDeckId, addCard, addCardsBulk } = useDeckStore();
   const [question, setQuestion] = useState('');
   const [answer, setAnswer] = useState('');
   const [jsonInput, setJsonInput] = useState('');
+
+  const activeDeck = decks.find(deck => deck.id === activeDeckId);
 
   const handleAddSingle = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,9 +58,30 @@ const AddCards = () => {
     }
   };
 
+  if (!activeDeck) {
+    return (
+      <div className="flex flex-col items-center justify-center text-center animate-fade-in pt-10">
+        <Card className="w-full max-w-md shadow-lg">
+          <CardHeader>
+            <CardTitle>No Deck Selected</CardTitle>
+            <CardDescription>
+              Please select a deck to add cards to from the home page.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link to="/">Go to Decks</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
     <div className="animate-fade-in">
-      <h1 className="text-3xl font-bold mb-6 text-center">Add New Flashcards</h1>
+      <h1 className="text-3xl font-bold mb-2 text-center">Add New Flashcards</h1>
+      <p className="text-center text-muted-foreground mb-6">Adding to deck: <strong>{activeDeck.name}</strong></p>
       <Tabs defaultValue="single" className="w-full">
         <TabsList className="grid w-full grid-cols-2">
           <TabsTrigger value="single">Add One by One</TabsTrigger>
